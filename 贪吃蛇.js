@@ -1,117 +1,161 @@
-class Snake {
-    constructor() {
-        this.snake = document.querySelector('.snake')
-        this.food = document.querySelector('.food')
-        this.bodys = document.querySelectorAll('.body')
-        this.top = 0
-        this.left = 100
-        this.lastTop = '' //记录蛇身体最后一段的top
-        this.lastLeft = '' //记录蛇身体最后一段的left
-        this.lastBody = null //蛇的最后一段，没吃到食物为null
-        this.snakeMoveByAuto = null
-        this.init()
+ 
+	//获取绘制工具
+	/*
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");//获取上下文
+	ctx.moveTo(0,0);
+	ctx.lineTo(450,450);*/
+	var c=document.getElementById("canvas");
+    var ctx=c.getContext("2d");
+    /*ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(450,450);
+    ctx.stroke();
+    */
+ 
+    var snake =[];//定义一条蛇，画蛇的身体
+    var snakeCount = 6;//初始化蛇的长度
+	var foodx =0;
+	var foody =0;
+    var togo =0;
+    function drawtable()//画地图的函数
+    {
+ 
+ 
+    	for(var i=0;i<60;i++)//画竖线
+    	{
+    		ctx.strokeStyle="black";
+    		ctx.beginPath();
+    		ctx.moveTo(15*i,0);
+    		ctx.lineTo(15*i,600);
+    		ctx.closePath();
+    		ctx.stroke();
+    	}
+        for(var j=0;j<40;j++)//画横线
+    	{
+    		ctx.strokeStyle="black";
+    		ctx.beginPath();
+    		ctx.moveTo(0,15*j);
+    		ctx.lineTo(900,15*j);
+    		ctx.closePath();
+    		ctx.stroke();
+    	}
+    	
+    	for(var k=0;k<snakeCount;k++)//画蛇的身体
+			{
+			ctx.fillStyle="#000";
+			if (k==snakeCount-1)
+			{
+				ctx.fillStyle="red";//蛇头的颜色与身体区分开
+			}
+			ctx.fillRect(snake[k].x,snake[k].y,15,15);//前两个数是矩形的起始坐标，后两个数是矩形的长宽。
+			
+			}
+			//绘制食物	
+    		ctx.fillStyle ="black";
+	     ctx.fillRect(foodx,foody,15,15);
+	     ctx.fill();
+    	
     }
-    // 初始化
-    init () {
-        this.snake.style.top = this.top + 'px'
-        this.snake.style.left = this.left + 'px'
-        this.foodAppearByRandom()
-        // 监听键盘的事件
-        document.querySelector('body').onkeydown = (e) => {
-            clearInterval(this.snakeMoveByAuto)
-            switch (e.keyCode) {
-                case 87:  //w键
-                    this.snakeMoveByAuto = setInterval(() => this.snakeMove(-50, 0), 500)
-                    break;
-                case 65: // a键
-                    this.snakeMoveByAuto = setInterval(() => this.snakeMove(0, -50), 500)
-                    break;
-                case 83:  // s键
-                    this.snakeMoveByAuto = setInterval(() => this.snakeMove(50, 0), 500)
-                    break;
-                case 68: // d键
-                    this.snakeMoveByAuto = setInterval(() => this.snakeMove(0, 50), 500)
-                    break;
+ 
+    
+    function start()//定义蛇的坐标
+    {
+    	//var snake =[];//定义一条蛇，画蛇的身体
+        //var snakeCount = 6;//初始化蛇的长度
+		
+		for(var k=0;k<snakeCount;k++)
+    		{
+    			snake[k]={x:k*15,y:0};
+    			
             }
-        }
+			
+		  drawtable();
+          addfood();//在start中调用添加食物函数
+ 
     }
-    // 食物随机出现
-    foodAppearByRandom () {
-        let length = this.bodys.length
-        this.food.style.top = Math.floor(Math.random() * 20) * 50 + 'px'
-        this.food.style.left = Math.floor(Math.random() * 20) * 50 + 'px'
-        // 防止食物刷新在同一位置
-        if (this.snake.style.top === this.food.style.top && this.snake.style.left === this.food.style.left) {
-            this.foodAppearByRandom()
-        }
-        // 防止食物刷新在蛇身上
-        for (var i = 0; i < length; i++) {
-            if (this.food.style.top === this.bodys[i].style.top && this.food.style.left === this.bodys[i].style.left) {
-                this.foodAppearByRandom()
-            }
-        }
-    }
-    // 移动蛇位置
-    snakeMove (top, left) {
-        let newTop = parseInt(this.snake.style.top.slice(0, -2)) + top
-        let newLeft = parseInt(this.snake.style.left.slice(0, -2)) + left
-        let length = this.bodys.length
-
-        // 阻止蛇走出方框
-        // 因为盒子的宽高是50px,就各自减50
-        if (newTop < 0 || newTop > 950 || newLeft < 0 || newLeft > 950) {
-            clearInterval(this.snakeMoveByAuto)
-            alert('gg')
-            window.location.reload()
-            return
-        }
-
-
-        // 让蛇身体后一个跟着前一个移动
-        for (var i = 0; i < length - 1; i++) {
-            console.log(this.bodys[i + 1].style.left)
-            this.bodys[i].style.left = this.bodys[i + 1].style.left
-            this.bodys[i].style.top = this.bodys[i + 1].style.top
-        }
-
-        // 让蛇身体的最后部分跟着蛇的头移动
-        this.bodys[length - 1].style.top = this.snake.style.top
-        this.bodys[length - 1].style.left = this.snake.style.left
-
-
-        // 让蛇的头部移动
-        this.snake.style.top = newTop + 'px'
-        this.snake.style.left = newLeft + 'px'
-
-
-        // 蛇吃到食物
-        if (this.snake.style.top === this.food.style.top && this.snake.style.left === this.food.style.left) {
-            this.lastTop = this.bodys[0].style.top
-            this.lastLeft = this.bodys[0].style.left
-            this.foodAppearByRandom()
-            this.snakeChangeBig()
-        }
-
-        // 循环判断蛇有没有撞到自己的身体
-        for (var i = 0; i < length; i++) {
-            if (this.snake.style.top === this.bodys[i].style.top && this.snake.style.left === this.bodys[i].style.left) {
-                clearInterval(this.snakeMoveByAuto)
-                alert('gg')
-                window.location.reload()
-            }
-        }
-    }
-    // 蛇吃到食物变大
-    snakeChangeBig () {
-        // 创建蛇身体最后一段
-        this.lastBody = document.createElement('div')
-        this.lastBody.className = 'body'
-        this.lastBody.style.top = this.lastTop
-        this.lastBody.style.left = this.lastLeft
-        document.querySelector('.box').prepend(this.lastBody)
-        // 因为添加了蛇的最后一段，所以要更新this.bodys
-        this.bodys = document.querySelectorAll('.body')
-    }
+ 
+    function addfood()
+	{
+	foodx = Math.floor(Math.random()*60)*15; //随机产生一个0-1之间的数
+	foody = Math.floor(Math.random()*40)*15;
+		
+		for (var k=0;k<snake;k++)
+		{
+			if (foodx==snake[k].x&&foody==sanke[k].y)//防止产生的随机食物落在蛇身上
+			{	
+			addfood();
+			}
+		}
+	
+	
+	}	
+    		
+   function move()
+   {
+	switch (togo)
+	{
+	case 1: snake.push({x:snake[snakeCount-1].x-15,y:snake[snakeCount-1].y}); break;//向左走
+	case 2: snake.push({x:snake[snakeCount-1].x,y:snake[snakeCount-1].y-15}); break;
+	case 3: snake.push({x:snake[snakeCount-1].x+15,y:snake[snakeCount-1].y}); break;
+	case 4: snake.push({x:snake[snakeCount-1].x,y:snake[snakeCount-1].y+15}); break;
+	case 5: snake.push({x:snake[snakeCount-1].x-15,y:snake[snakeCount-1].y-15}); break;
+	case 6: snake.push({x:snake[snakeCount-1].x+15,y:snake[snakeCount-1].y+15}); break;
+	default: snake.push({x:snake[snakeCount-1].x+15,y:snake[snakeCount-1].y});
+	}
+    snake.shift();//删除数组第一个元素
+   	ctx.clearRect(0,0,900,600);//清除画布重新绘制
+   	isEat();
+	isDead();
+	drawtable();
+   } 			
+   
+   function keydown(e)
+   {
+   switch(e.keyCode)
+		{
+         case 37: togo=1; break;
+		 case 38: togo=2; break;
+		 case 39: togo=3; break;
+		 case 40: togo=4; break;
+		 case 65: togo=5; break;
+		 case 68: togo=6; break;
+		}
+   }
+   
+   function isEat()//吃到食物后长度加1
+   {
+    if(snake[snakeCount-1].x==foodx&&snake[snakeCount-1].y==foody)
+   {
+		addfood();
+		snakeCount++;
+		snake.unshift({x:-15,y:-15});
+   }
+   
+   }
+   
+   function isDead()
+   {
+    if (snake[snakeCount-1].x>885||snake[snakeCount-1].y>585||snake[snakeCount-1].x<0||snake[snakeCount-1].y<0)
+		{
+		alert("You are dead,GAME OVER!!!");
+		window.location.reload();
+		}
+   }
+   
+    document.onkeydown=function(e)
+{
+	keydown(e);
+ 
+} 
+window.onload = function()//调用函数
+{ 
+	start();
+	setInterval(move,150);
+	drawtable();
+	
+	
+ 
 }
-
-var snake = new Snake()
+           
+ 
