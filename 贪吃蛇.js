@@ -9,153 +9,129 @@
     var ctx=c.getContext("2d");
     /*ctx.beginPath();
     ctx.moveTo(0,0);
-    ctx.lineTo(450,450);
-    ctx.stroke();
-    */
+    <!DOCTYPE html>
+<html>
  
-    var snake =[];//定义一条蛇，画蛇的身体
-    var snakeCount = 6;//初始化蛇的长度
-	var foodx =0;
-	var foody =0;
-    var togo =0;
-    function drawtable()//画地图的函数
-    {
- 
- 
-    	for(var i=0;i<60;i++)//画竖线
-    	{
-    		ctx.strokeStyle="black";
-    		ctx.beginPath();
-    		ctx.moveTo(15*i,0);
-    		ctx.lineTo(15*i,600);
-    		ctx.closePath();
-    		ctx.stroke();
-    	}
-        for(var j=0;j<40;j++)//画横线
-    	{
-    		ctx.strokeStyle="black";
-    		ctx.beginPath();
-    		ctx.moveTo(0,15*j);
-    		ctx.lineTo(900,15*j);
-    		ctx.closePath();
-    		ctx.stroke();
-    	}
-    	
-    	for(var k=0;k<snakeCount;k++)//画蛇的身体
-			{
-			ctx.fillStyle="#000";
-			if (k==snakeCount-1)
-			{
-				ctx.fillStyle="red";//蛇头的颜色与身体区分开
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=">
+		<title>first html5 page</title>
+		<!-- 
+        <link rel="stylesheet" href="/css/style.css">
+        <script src="/js/libs/modernizr-2.5.3.min.js">
+        -->
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				width: 900px;
+				background: #fff;
+				font: 100%/1.4 helvetica, arial, sans-serif;
 			}
-			ctx.fillRect(snake[k].x,snake[k].y,15,15);//前两个数是矩形的起始坐标，后两个数是矩形的长宽。
 			
+			header {
+				background: #ccc;
+				padding: 20px;
 			}
-			//绘制食物	
-    		ctx.fillStyle ="black";
-	     ctx.fillRect(foodx,foody,15,15);
-	     ctx.fill();
-    	
-    }
- 
-    
-    function start()//定义蛇的坐标
-    {
-    	//var snake =[];//定义一条蛇，画蛇的身体
-        //var snakeCount = 6;//初始化蛇的长度
-		
-		for(var k=0;k<snakeCount;k++)
-    		{
-    			snake[k]={x:k*15,y:0};
-    			
-            }
 			
-		  drawtable();
-          addfood();//在start中调用添加食物函数
- 
-    }
- 
-    function addfood()
-	{
-	foodx = Math.floor(Math.random()*60)*15; //随机产生一个0-1之间的数
-	foody = Math.floor(Math.random()*40)*15;
-		
-		for (var k=0;k<snake;k++)
-		{
-			if (foodx==snake[k].x&&foody==sanke[k].y)//防止产生的随机食物落在蛇身上
-			{	
-			addfood();
+			header h1 {
+				margin: 0;
 			}
-		}
-	
-	
-	}	
-    		
-   function move()
-   {
-	switch (togo)
-	{
-	case 1: snake.push({x:snake[snakeCount-1].x-15,y:snake[snakeCount-1].y}); break;//向左走
-	case 2: snake.push({x:snake[snakeCount-1].x,y:snake[snakeCount-1].y-15}); break;
-	case 3: snake.push({x:snake[snakeCount-1].x+15,y:snake[snakeCount-1].y}); break;
-	case 4: snake.push({x:snake[snakeCount-1].x,y:snake[snakeCount-1].y+15}); break;
-	case 5: snake.push({x:snake[snakeCount-1].x-15,y:snake[snakeCount-1].y-15}); break;
-	case 6: snake.push({x:snake[snakeCount-1].x+15,y:snake[snakeCount-1].y+15}); break;
-	default: snake.push({x:snake[snakeCount-1].x+15,y:snake[snakeCount-1].y});
-	}
-    snake.shift();//删除数组第一个元素
-   	ctx.clearRect(0,0,900,600);//清除画布重新绘制
-   	isEat();
-	isDead();
-	drawtable();
-   } 			
-   
-   function keydown(e)
-   {
-   switch(e.keyCode)
-		{
-         case 37: togo=1; break;
-		 case 38: togo=2; break;
-		 case 39: togo=3; break;
-		 case 40: togo=4; break;
-		 case 65: togo=5; break;
-		 case 68: togo=6; break;
-		}
-   }
-   
-   function isEat()//吃到食物后长度加1
-   {
-    if(snake[snakeCount-1].x==foodx&&snake[snakeCount-1].y==foody)
-   {
-		addfood();
-		snakeCount++;
-		snake.unshift({x:-15,y:-15});
-   }
-   
-   }
-   
-   function isDead()
-   {
-    if (snake[snakeCount-1].x>885||snake[snakeCount-1].y>585||snake[snakeCount-1].x<0||snake[snakeCount-1].y<0)
-		{
-		alert("You are dead,GAME OVER!!!");
-		window.location.reload();
-		}
-   }
-   
-    document.onkeydown=function(e)
-{
-	keydown(e);
+			
+			nav {
+				float: left;
+				width: 900px;
+				background: #333;
+			}
+			
+			nav ul {
+				margin: 0;
+				padding: 0;
+			}
+			
+			nav ul li {
+				list-style-type: none;
+				display: inline;
+			}
+			
+			nav li a {
+				display: block;
+				float: left;
+				padding: 5px 10px;
+				color: #fff;
+				text-decoration: none;
+				border-right: 1px solid #fff;
+			}
+			
+			article {
+				clear: left;
+				float: left;
+				width: 560px;
+				padding: 20px 0;
+				margin: 0 0 0 30px;
+				display: inline;
+			}
+			
+			article h2 {
+				margin: 0;
+			}
+			
+			aside {
+				float: right;
+				width: 240px;
+				padding: 20px 0;
+				margin: 0 20px 0 0;
+				display: inline;
+			}
+			
+			aside h3 {
+				margin: 0;
+			}
+			
+			footer {
+				clear: both;
+				background: #ccc;
+				text-align: right;
+				padding: 20px;
+				height: 1%;
+			}
+		</style>
+		<script type="text/javascript">
+		</script>
+	</head>
  
-} 
-window.onload = function()//调用函数
-{ 
-	start();
-	setInterval(move,150);
-	drawtable();
-	
-	
+	<body>
+		<!-- 头部 -->
+		<header>
+			<h1>头部</h1>
+		</header>
+		<!-- 导航 -->
+		<nav>
+			<ul>
+				<li id="home">Home</li>
+				<li id="about">About</li>
+				<li id="contact">Contact</li>
+			</ul>
+		</nav>
+		<!-- 导航 -->
+		<section>
+			<h1>My Article</h1>
+			<article>
+				<p>this is first article</p>
+				<div id="second_item">this is second article,I'm
+					<a href="http://www.cnlbogs.com/hongten">Hongten</a>
+					</p>
+					<p>this is third article</p>
+					<p>this is 4's article</p>
+			</article>
+		</section>
+		<aside></aside>
+		<!-- 尾部 -->
+		<footer class="footer1">
+			<p>
+				<a href="mailto:hongtenzone@foxmail.com">hongtenzone@foxmail.com</a> ||
+				<a href="http://www.cnlbogs.com/hongten">Hongten</a>
+			</p>
+		</footer>
+	</body>
  
-}
-           
- 
+</html>
